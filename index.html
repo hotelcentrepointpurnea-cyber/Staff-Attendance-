@@ -8,34 +8,40 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f9; margin: 0; padding: 20px; }
-        video { border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        video { width: 100%; max-width: 500px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         #status { font-size: 20px; font-weight: bold; margin-top: 15px; color: #333; }
     </style>
 </head>
 <body>
 
     <h2>স্টাফ হাজিরা সিস্টেম (ফেস স্ক্যানার)</h2>
-    <video id="video" width="640" height="480" autoplay muted></video>
+    <video id="video" autoplay muted playsinline></video>
     <div id="status">ক্যামেরা লোড হচ্ছে... অনুগ্রহ করে সামনে দাঁড়ান।</div>
 
     <script>
         const video = document.getElementById('video');
         const statusText = document.getElementById('status');
-        const WEB_APP_URL = https://script.google.com/macros/s/AKfycbweaQQM_3t7uSezBHlLIOt5N5R7VbFyyZs33wbnD3Vv_IdPoKjRN_h5r4qpJFSmwZIX/exec
-
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbweaQQM_3t7uSezBHlLIOt5N5R7VbFyyZs33wbnD3Vv_IdPoKjRN_h5r4qpJFSmwZIX/exec"
         async function startVideo() {
             navigator.mediaDevices.getUserMedia({ video: {} })
                 .then(stream => { video.srcObject = stream; })
-                .catch(err => console.error("ক্যামেরা পাওয়া যায়নি: ", err));
+                .catch(err => {
+                    console.error("ক্যামেরা পাওয়া যায়নি: ", err);
+                    statusText.innerText = "ক্যামেরা চালু করা সম্ভব হয়নি। ব্রাউজার পারমিশন চেক করুন।";
+                });
         }
 
         async function loadModels() {
             statusText.innerText = "AI মডেল লোড হচ্ছে...";
-            await faceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-            await faceapi.nets.faceLandmarkNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-            await faceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-            statusText.innerText = "সিস্টেম প্রস্তুত! ক্যামেরার সামনে আসুন।";
-            detectFaces();
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                await faceapi.nets.faceLandmarkNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                await faceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                statusText.innerText = "সিস্টেম প্রস্তুত! ক্যামেরার সামনে আসুন।";
+                detectFaces();
+            } catch (error) {
+                statusText.innerText = "মডেল লোড হতে সমস্যা হয়েছে। ইন্টারনেট কানেকশন চেক করুন।";
+            }
         }
 
         function detectFaces() {
@@ -43,10 +49,9 @@
                 const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions());
                 if (detections) {
                     statusText.innerText = "মুখ শনাক্ত করা হয়েছে! হাজিরা রেকর্ড হচ্ছে...";
-                    // এখানে স্টাফের আইডি ও নাম ফিক্সড বা ডাটাবেস থেকে ফেচ করা যাবে
                     recordAttendance("STF-101", "Rahul Kumar");
                 }
-            }, 5000); // প্রতি ৫ সেকেন্ডে চেক করবে
+            }, 5000);
         }
 
         function recordAttendance(id, name) {
