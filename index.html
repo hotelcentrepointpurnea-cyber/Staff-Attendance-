@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Staff Face Attendance</title>
-    <!-- face-api.js লাইব্রেরি লোড করা হচ্ছে -->
     <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f9; margin: 0; padding: 20px; }
@@ -19,11 +18,11 @@
     <div id="status">ক্যামেরা লোড হচ্ছে... অনুগ্রহ করে সামনে দাঁড়ান।</div>
 
     <script>
-        constvideo = document.getElementById('video');
-        conststatusText = document.getElementById('status');
-        constWEB_APP_URL = "https://script.google.com/macros/s/AKfycbweaQQM_3t7uSezBHlLIOt5N5R7VbFyyZs33wbnD3Vv_IdPoKjRN_h5r4qpJFSmwZIX/exec";
+        const video = document.getElementById('video');
+        const statusText = document.getElementById('status');
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbweaQQM_3t7uSezBHlLIOt5N5R7VbFyyZs33wbnD3Vv_IdPoKjRN_h5r4qpJFSmwZIX/exec";
 
-        asyncfunction startVideo() {
+        async function startVideo() {
             navigator.mediaDevices.getUserMedia({ video: {} })
                 .then(stream => { video.srcObject = stream; })
                 .catch(err => {
@@ -32,12 +31,12 @@
                 });
         }
 
-        asyncfunction loadModels() {
+        async function loadModels() {
             statusText.innerText = "AI মডেল লোড হচ্ছে...";
-        try{
-                awaitfaceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-                awaitfaceapi.nets.faceLandmarkNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-                awaitfaceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                await faceapi.nets.faceLandmarkNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                await faceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
                 statusText.innerText = "সিস্টেম প্রস্তুত! ক্যামেরার সামনে আসুন।";
                 detectFaces();
             } catch (error) {
@@ -45,9 +44,9 @@
             }
         }
 
-        functiondetectFaces() {
+        function detectFaces() {
             setInterval(async () => {
-                constdetections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions());
+                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions());
                 if (detections) {
                     statusText.innerText = "মুখ শনাক্ত করা হয়েছে! হাজিরা রেকর্ড হচ্ছে...";
                     recordAttendance("STF-101", "Rahul Kumar");
@@ -55,7 +54,7 @@
             }, 5000);
         }
 
-        functionrecordAttendance(id, name) {
+        function recordAttendance(id, name) {
             fetch(WEB_APP_URL, {
                 method: "POST",
                 mode: "no-cors",
