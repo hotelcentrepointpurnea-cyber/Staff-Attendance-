@@ -19,11 +19,11 @@
     <div id="status">ক্যামেরা লোড হচ্ছে... অনুগ্রহ করে সামনে দাঁড়ান।</div>
 
     <script>
-        const video = document.getElementById('video');
-        const statusText = document.getElementById('status');
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbweaQQM_3t7uSezBHlLIOt5N5R7VbFyyZs33wbnD3Vv_IdPoKjRN_h5r4qpJFSmwZIX/exec";
+        constvideo = document.getElementById('video');
+        conststatusText = document.getElementById('status');
+        constWEB_APP_URL = "https://script.google.com/macros/s/AKfycbweaQQM_3t7uSezBHlLIOt5N5R7VbFyyZs33wbnD3Vv_IdPoKjRN_h5r4qpJFSmwZIX/exec";
 
-        async function startVideo() {
+        asyncfunction startVideo() {
             navigator.mediaDevices.getUserMedia({ video: {} })
                 .then(stream => { video.srcObject = stream; })
                 .catch(err => {
@@ -32,12 +32,12 @@
                 });
         }
 
-        async function loadModels() {
+        asyncfunction loadModels() {
             statusText.innerText = "AI মডেল লোড হচ্ছে...";
-            try {
-                await faceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-                await faceapi.nets.faceLandmarkNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
-                await faceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+        try{
+                awaitfaceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                awaitfaceapi.nets.faceLandmarkNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
+                awaitfaceapi.nets.faceRecognitionNet.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models');
                 statusText.innerText = "সিস্টেম প্রস্তুত! ক্যামেরার সামনে আসুন।";
                 detectFaces();
             } catch (error) {
@@ -45,9 +45,9 @@
             }
         }
 
-        function detectFaces() {
+        functiondetectFaces() {
             setInterval(async () => {
-                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions());
+                constdetections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions());
                 if (detections) {
                     statusText.innerText = "মুখ শনাক্ত করা হয়েছে! হাজিরা রেকর্ড হচ্ছে...";
                     recordAttendance("STF-101", "Rahul Kumar");
@@ -55,7 +55,7 @@
             }, 5000);
         }
 
-        function recordAttendance(id, name) {
+        functionrecordAttendance(id, name) {
             fetch(WEB_APP_URL, {
                 method: "POST",
                 mode: "no-cors",
